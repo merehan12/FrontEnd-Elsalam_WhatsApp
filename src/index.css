@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+html, body, #root {
+  height: 100%;
+}
+body {
+  background: #f9fafb; /* Tailwind: bg-gray-50 */
+}
+@media (prefers-color-scheme: dark) {
+  body { background: #111827; } /* Tailwind: bg-gray-900 */
+}
+
+/* Hide scrollbar but keep scroll */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; } /* Chrome/Safari/Edge */
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; } /* IE/Firefox */
+}
+html, body, #root { height: 100%; min-height: 0; }
+/* لا تضيفي overflow: hidden هنا */
+.no-scrollbar { 
+  -ms-overflow-style: none;      /* IE/Edge */
+  scrollbar-width: none;         /* Firefox */
+}
+.no-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+

@@ -1,0 +1,214 @@
+{
+  "navbar": {
+  "profile": "الملف الشخصي",
+  "logout": "تسجيل خروج"
+  },
+  
+  "sidebar": {
+    "chats": "المحادثات",
+    "reports": "التقارير",
+    "staff": "الموظفون",
+    "customers":"العملاء",
+    "settings": "الإعدادات"
+  },
+   "chats": {
+    "filters": {
+      "all": "الكل",
+      "unassigned": "غير مسندة",
+      "my": "محادثاتي",
+      "closed":"المغلقة",
+      "unread":"غير مقروءة"
+
+    
+
+    },
+    "assigned_to": "مُسنَدة إلى",
+    "unassigned": "غير مسندة",
+    "no_results": "لا توجد محادثات",
+    "no_messages": "لا توجد رسائل بعد",
+    "search_by_phone": "بحث برقم الهاتف",
+    "err_refresh": "تعذّر تحديث الرسائل",
+    "closed": "مغلقة",
+    "sending": "جارٍ الإرسال…",
+    "sent": "تم الإرسال",
+    "delivered": "تم التسليم",
+    "read": "مقروءة",
+    "close_reason_title": "اختر سبب/حالة الإغلاق",
+    "confirm_close": "تأكيد الإغلاق",
+    "title": "المحادثات",
+    "search": "ابحث في المحادثات...",
+    "select_prompt": "اختر محادثة لبدء الدردشة",
+    "type": "اكتب رسالتك...",
+        "date_filter_label" :"فلترة بالتاريخ"
+
+  },
+  "status": {
+    "online": "متصل",
+    "offline": "غير متصل"
+  },
+  "login": {
+    "title": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "login_button": "تسجيل الدخول"
+  },
+   "reports": {
+    "from_date": "من تاريخ",
+    "to_date": "إلى تاريخ",
+    "staff": "الموظفون",
+    "apply": "تطبيق",
+    "all": "الكل",
+    "date_placeholder": "mm/dd/yyyy",
+    "total_chats": "إجمالي المحادثات",
+    "closed_chats": "المحادثات المغلقة",
+    "assigned_chats": "المحادثات المسندة",
+    "unassigned_chats": "المحادثات غير المسندة",
+    "trend_from_last_month": "{{value}} مقارنة بالشهر الماضي",
+    "of_total_chats": "{{value}}٪ من إجمالي المحادثات",
+    "assignment_status": "حالة الإسناد",
+    "staff_performance": "أداء الموظفين",
+    "staff_member": "الموظف",
+    "messages_sent": "الرسائل المُرسلة",
+    "chats_handled": "المحادثات المسندة"
+  },
+  "pagination": {
+    "next": "التالي",
+    "previous": "السابق"
+  },
+  "staff": {
+    "title": "إدارة الموظفين",
+    "add_staff": "إضافة موظف",
+    "search_placeholder": "ابحث عن موظف...",
+    "all_roles": "كل الأدوار",
+    "all_status": "كل الحالات",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "role": {
+      "staff": "موظف",
+      "manager": "مدير"
+    },"form": {
+      "title" :"اضافة موظف",
+      "full_name": "الاسم الكامل",
+      "name_ph": "مثال: John Doe",
+      "email": "البريد الإلكتروني",
+      "email_ph": "name@example.com",
+      "phone": "رقم الهاتف",
+      "phone_ph": "+1 555 123 4567",
+      "role": "الدور"
+    },
+    "validation": {
+      "name_required": "الاسم مطلوب",
+      "email_required": "البريد الإلكتروني مطلوب",
+      "email_invalid": "صيغة البريد الإلكتروني غير صحيحة",
+      "phone_required": "رقم الهاتف مطلوب",
+      "phone_invalid": "رقم الهاتف غير صحيح",
+      "role_required": "يرجى اختيار الدور"
+    },
+    "th_member": "الموظف",
+    "th_role": "الدور",
+    "th_status": "الحالة",
+    "th_chats": "المحادثات",
+    "th_join_date": "تاريخ الانضمام",
+    "th_actions": "الإجراءات",
+    "showing": "عرض {{from}} إلى {{to}} من أصل {{total}} نتيجة"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "profile_settings": "إعدادات الملف الشخصي",
+    "notifications": "الإشعارات",
+    "security": "الأمان",
+    "preferences": "التفضيلات",
+    "save": "حفظ التغييرات",
+    "profile": {
+      "full_name": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "role": "الدور الوظيفي",
+      "phone": "رقم الهاتف"
+    },
+    "preferences_block": {
+      "language": "اللغة",
+      "english": "الإنجليزية",
+      "arabic": "العربية",
+      "theme": "المظهر",
+      "switch_to_light": "التبديل إلى الوضع الفاتح",
+      "switch_to_dark": "التبديل إلى الوضع الداكن"
+    },
+    "security_block": {
+      "two_factor": "المصادقة الثنائية",
+      "two_factor_desc": "أضف طبقة أمان إضافية لحسابك",
+      "change_password": "تغيير كلمة المرور",
+      "change_password_desc": "تحديث كلمة مرور حسابك"
+    }
+  },
+  "profile": {
+    "title": "الملف الشخصي",
+    "edit": "تعديل الملف",
+    "full_name": "الاسم الكامل",
+    "phone": "رقم الهاتف",
+    "email": "البريد الإلكتروني",
+    "role": "الدور",
+    "account_info": "معلومات الحساب",
+    "member_since": "عضو منذ",
+    "status": "الحالة",
+    "active": "نشط",
+    "inactive": "غير نشط"
+  },
+   "edit_profile": {
+    "title": "تعديل الملف",
+    "subtitle": "حدّث معلومات ملفك الشخصي",
+    "change_avatar": "تغيير الصورة",
+    "avatar_hint": "JPG أو PNG أو GIF — الحد الأقصى 2MB",
+    "role_locked": "لا يمكن تعديل الدور"
+  },
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "saving": "جارٍ الحفظ...",
+    "no_results": "لا توجد نتائج"
+
+  },
+  "assign": {
+    "title": "إسناد المحادثة إلى",
+    "search": "ابحث عن موظف…",
+    "no_staff": "لا يوجد موظفون مطابقون"
+  },
+   "customers": {
+    "title": "عدد العملاء",
+    "search": "ابحث بالاسم أو رقم الهاتف  ",
+    "view": "عرض",
+    "no_results": "لا يوجد عملاء",
+    "th_customer": "العميل",
+    "th_waid": "رقم الواتساب ",
+    "th_phone": "رقم الهاتف",
+    "th_extra_phones": "أرقام إضافية",
+    "th_created": "تاريخ الإنشاء",
+    "th_actions": "الإجراءات",
+    "per_page": "{{n}} / الصفحة",
+    "created_at":"تاريخ الاضافة"
+
+  } ,
+     "validation": {
+    "username_required": "اسم المستخدم مطلوب",
+    "password_required":"كلمة المرور مطلوبة",
+    "userName" :"اسم المستخدم",
+    "password" :"كلمة المرور",
+    "firstname" :"الاسم الاول" ,
+    "lastname" :"الاسم الاخير" 
+  },
+
+   "close_chat": {
+    "button": "إغلاق المحادثة",
+    "title": "اختر سبب/حالة الإغلاق",
+    "reasons": {
+      "inquiry": "استفسار",
+      "companies": "شركات",
+      "unavailable": "منتج غير متوفر",
+      "sheeted": "تم رفع الطلب في الشيت"
+    },
+    "cancel": "إلغاء",
+    "confirm": "تأكيد الإغلاق"
+  }
+  
+}
+
+

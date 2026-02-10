@@ -1,0 +1,211 @@
+{
+  "navbar": {
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "sidebar": {
+    "chats": "Chats",
+    "reports": "Reports",
+    "staff": "Staff",
+    "customers":"Customers",
+    "settings": "Settings"
+  },
+  "chats": {
+       "filters": {
+      "all": "All",
+      "unassigned": "Unassigned",
+      "my": "My conversations",
+      "closed":"Closed",
+      "unread":"Unread"
+    },
+     "assigned_to": "Assigned to",
+    "unassigned": "Unassigned",
+    "no_results": "No chats found",
+    "no_messages": "No messages yet",
+    "search_by_phone": "Search by phone",
+    "err_refresh": "Couldn't refresh messages",
+    "closed": "Closed",
+    "sending": "sending…",
+    "sent": "sent",
+    "delivered": "delivered",
+    "read": "read",
+    "close_reason_title": "Choose a close reason/sub-status",
+    "confirm_close": "Confirm Close",
+    "title": "Chats",
+    "search": "Search chats...",
+    "select_prompt": "Select a chat to start messaging",
+    "type": "Type your message...",
+    "date_filter_label" :"Filter by date"
+  },
+  "status": {
+    "online": "online",
+    "offline": "offline"
+  },
+  "login": {
+    "title": "Login",
+    "email": "Email",
+    "password": "Password",
+    "login_button": "Login"
+  },
+  "reports": {
+    "from_date": "From Date",
+    "to_date": "To Date",
+    "staff": "Staff",
+    "apply": "Apply",
+    "all": "All",
+    "date_placeholder": "mm/dd/yyyy",
+    "total_chats": "Total Chats",
+    "closed_chats": "Closed Chats",
+    "assigned_chats": "Assigned Chats",
+    "unassigned_chats": "Unassigned Chats",
+    "trend_from_last_month": "{{value}} from last month",
+    "of_total_chats": "{{value}}% of total chats",
+    "assignment_status": "Assignment Status",
+    "staff_performance": "Staff Performance",
+    "staff_member": "Staff Member",
+    "messages_sent": "Messages Sent",
+    "chats_handled": "Chats Handled"
+  },
+  "pagination": {
+    "next": "Next",
+    "previous": "Previous"
+  },
+  "staff": {
+    "title": "Staff Management",
+    "add_staff": "Add Staff",
+    "search_placeholder": "Search staff...",
+    "all_roles": "All Roles",
+    "all_status": "All Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "role": {
+      "staff": "Staff",
+      "manager": "Manager"
+    },
+    "form": {
+      "title" :"Add New Staff",
+      "full_name": "Full Name",
+      "name_ph": "e.g. John Doe",
+      "email": "Email",
+      "email_ph": "name@example.com",
+      "phone": "Phone Number",
+      "phone_ph": "+1 555 123 4567",
+      "role": "Role"
+    },
+    "validation": {
+      "name_required": "Name is required",
+      "email_required": "Email is required",
+      "email_invalid": "Invalid email format",
+      "phone_required": "Phone number is required",
+      "phone_invalid": "Invalid phone number",
+      "role_required": "Please select a role"
+    },
+    "th_member": "Staff Member",
+    "th_role": "Role",
+    "th_status": "Status",
+    "th_chats": "Chats",
+    "th_join_date": "Join Date",
+    "th_actions": "Actions",
+    "showing": "Showing {{from}} to {{to}} of {{total}} results"
+  },
+  "settings": {
+    "title": "Settings",
+    "profile_settings": "Profile Settings",
+    "notifications": "Notifications",
+    "security": "Security",
+    "preferences": "Preferences",
+    "save": "Save Changes",
+
+    "profile": {
+      "full_name": "Full Name",
+      "email": "Email",
+      "role": "Role",
+      "phone": "Phone Number"
+    },
+    "preferences_block": {
+      "language": "Language",
+      "english": "English",
+      "arabic": "Arabic",
+      "theme": "Theme",
+      "switch_to_light": "Switch to Light Mode",
+      "switch_to_dark": "Switch to Dark Mode"
+    },
+    "security_block": {
+      "two_factor": "Two-Factor Authentication",
+      "two_factor_desc": "Add extra security to your account",
+      "change_password": "Change Password",
+      "change_password_desc": "Update your account password"
+    }
+  },
+    "profile": {
+      "title": "Profile",
+      "edit": "Edit Profile",
+      "full_name": "Full Name",
+      "phone": "Phone Number",
+      "email": "Email Address",
+      "role": "Role",
+      "account_info": "Account Information",
+      "member_since": "Member Since",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "edit_profile": {
+    "title": "Edit Profile",
+    "subtitle": "Update your profile information",
+    "change_avatar": "Change Avatar",
+    "avatar_hint": "JPG, PNG or GIF. Max size 2MB",
+    "role_locked": "Role cannot be changed"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+   "no_results": "No results"
+  }
+  ,
+    "assign": {
+    "title": "Assign chat to",
+    "search": "Search staff…",
+    "no_staff": "No staff found"
+  },
+ "customers": {
+    "title": "Customers Count",
+    "search": "Search by name, phone, or wa_id",
+    "view": "View",
+    "no_results": "No customers found",
+    "th_customer": "Customer",
+    "th_waid": "WA ID",
+    "th_phone": "Phone",
+    "th_extra_phones": "Extra Phones",
+    "th_created": "Created",
+    "th_actions": "Actions",
+    "per_page": "{{n}} / page",
+    "created_at":"created_at"
+  },
+
+   "validation": {
+    "username_required": "Username is required",
+    "password_required":"Password is required",
+    "userName" :"Username",
+    "password" :"Password",
+    "firstname" :"First name" ,
+    "lastname" :"Last name" 
+  
+
+  },
+  
+    "close_chat": {
+    "button": "Close Chat",
+    "title": "Select reason/status for closing",
+    "reasons": {
+      "inquiry": "Inquiry",
+      "companies": "Companies",
+      "unavailable": "Product unavailable",
+      "sheeted": "Order logged in sheet"
+    },
+
+    "cancel": "Cancel",
+    "confirm": "Confirm Close"
+  }
+}
