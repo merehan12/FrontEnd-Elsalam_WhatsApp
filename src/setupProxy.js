@@ -3,7 +3,7 @@ module.exports = function (app) {
   app.use(
     '/wss',
     createProxyMiddleware({
-      target: 'https://chat-backend-7isxn.ondigitalocean.app',
+      target: "https://wh-alyaa-backend-23edk.ondigitalocean.app",
       changeOrigin: true,
       ws: true,
       secure: true,
@@ -12,7 +12,7 @@ module.exports = function (app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: 'https://chat-backend-7isxn.ondigitalocean.app',
+      target: "https://wh-alyaa-backend-23edk.ondigitalocean.app",
       changeOrigin: true,
       secure: true,
     })
