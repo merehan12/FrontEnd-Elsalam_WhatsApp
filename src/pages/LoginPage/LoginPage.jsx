@@ -46,7 +46,7 @@ export default function LoginPage() {
           <div className="mx-auto h-16 w-16 bg-primary rounded-full flex items-center justify-center mb-4">
             <MessageCircle className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Salam WhatsApp Management</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Alaylaa WhatsApp Management</h1>
           <p className="mt-2 text-gray-600">Sign in to your account</p>
         </div>
 

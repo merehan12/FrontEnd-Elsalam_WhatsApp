@@ -393,7 +393,7 @@ const baseListForSearch = useMemo(() => {
             onClick={() => onFilterChange("all")}
             className={`px-2 md:px-3 py-1 rounded-lg text-xs md:text-sm transition shrink-0 whitespace-nowrap ${
               filter === "all"
-                ? "bg-[#63bbb3] text-white"
+                ? "bg-[#952D8C] text-white"
                 : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
             }`}
           >
@@ -405,7 +405,7 @@ const baseListForSearch = useMemo(() => {
             onClick={() => onFilterChange("unassigned")}
             className={`px-2 md:px-3 py-1 rounded-lg text-xs md:text-sm transition shrink-0 whitespace-nowrap ${
               filter === "unassigned"
-                ? "bg-[#63bbb3] text-white"
+                ? "bg-[#952D8C] text-white"
                 : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
             }`}
           >
@@ -419,7 +419,7 @@ const baseListForSearch = useMemo(() => {
             onClick={() => onFilterChange("my")}
             className={`px-2 md:px-3 py-1 rounded-lg text-xs md:text-sm transition shrink-0 whitespace-nowrap ${
               filter === "my"
-                ? "bg-[#63bbb3] text-white"
+                ? "bg-[#952D8C] text-white"
                 : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
             }`}
           >
@@ -431,7 +431,7 @@ const baseListForSearch = useMemo(() => {
             onClick={() => onFilterChange("closed")}
             className={`px-2 md:px-3 py-1 rounded-lg text-xs md:text-sm transition shrink-0 whitespace-nowrap ${
               filter === "closed"
-                ? "bg-[#63bbb3] text-white"
+                ? "bg-[#952D8C] text-white"
                 : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
             }`}
           >
@@ -444,7 +444,7 @@ const baseListForSearch = useMemo(() => {
   onClick={() => onFilterChange("unread")}
   className={`px-2 md:px-3 py-1 rounded-lg text-xs md:text-sm transition shrink-0 whitespace-nowrap ${
     filter === "unread"
-      ? "bg-[#63bbb3] text-white"
+      ? "bg-[#952D8C] text-white"
       : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
   }`}
 >
@@ -550,7 +550,7 @@ const baseListForSearch = useMemo(() => {
                   className={`p-4 border-b cursor-pointer transition-colors 
                     ${
                       String(selectedChat) === String(chat.id)
-                        ? "bg-[#63bbb3] bg-opacity-10"
+                        ? "bg-[#952D8C] bg-opacity-10"
                         : "hover:bg-gray-50 dark:hover:bg-gray-700"
                     }
                     ${isClosed ? "opacity-80" : ""} border-gray-100 dark:border-gray-700`}
@@ -561,7 +561,7 @@ const baseListForSearch = useMemo(() => {
                     }`}
                   >
                     <div className="relative shrink-0">
-                      <div className="w-12 h-12 bg-[#63bbb3] rounded-full flex items-center justify-center">
+                      <div className="w-12 h-12 bg-[#952D8C] rounded-full flex items-center justify-center">
                         <span className="text-white font-medium">
                           {chat.avatar}
                         </span>
@@ -631,7 +631,7 @@ const baseListForSearch = useMemo(() => {
                           {previewTextFromChat(chat)}
                         </p>
                         {unread > 0 && (
-                          <span className="bg-[#63bbb3] text-white text-xs rounded-full px-2 py-1 shrink-0">
+                          <span className="bg-[#952D8C] text-white text-xs rounded-full px-2 py-1 shrink-0">
                             {unread}
                           </span>
                         )}

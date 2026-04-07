@@ -641,7 +641,7 @@ export default function Composer({
 
         <button
           onClick={handleSendClick}
-          className="px-4 py-2 bg-[#63bbb3] text-white rounded-xl hover:opacity-90 disabled:opacity-60 flex items-center gap-2 shadow-sm active:scale-[0.99] transition"
+          className="px-4 py-2 bg-[#952D8C] text-white rounded-xl hover:opacity-90 disabled:opacity-60 flex items-center gap-2 shadow-sm active:scale-[0.99] transition"
           disabled={disabledSend}
           title={t?.("send", "Send")}
         >

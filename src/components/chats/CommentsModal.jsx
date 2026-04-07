@@ -162,7 +162,7 @@ export default function CommentsModal({
                           Cancel
                         </button>
                         <button
-                          className="px-2 py-1 rounded-lg text-sm bg-[#63bbb3] text-white hover:opacity-90 disabled:opacity-60"
+                          className="px-2 py-1 rounded-lg text-sm bg-[#952D8C] text-white hover:opacity-90 disabled:opacity-60"
                           disabled={!editText.trim()}
                           onClick={() => onSaveEdit(c.id)}
                         >
@@ -233,13 +233,13 @@ export default function CommentsModal({
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="Write an internal note..."
-            className="w-full min-h-[96px] rounded-xl border bg-gray-50 border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 p-3 outline-none focus:ring-2 focus:ring-[#63bbb3]/60"
+            className="w-full min-h-[96px] rounded-xl border bg-gray-50 border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 p-3 outline-none focus:ring-2 focus:ring-[#952D8C]/60"
           />
           <div className="mt-3 flex items-center justify-end">
             <button
               disabled={!canSubmit}
               onClick={onCreate}
-              className="px-4 py-2 rounded-xl bg-[#63bbb3] text-white hover:opacity-90 disabled:opacity-60"
+              className="px-4 py-2 rounded-xl bg-[#952D8C] text-white hover:opacity-90 disabled:opacity-60"
             >
               Add comment
             </button>
