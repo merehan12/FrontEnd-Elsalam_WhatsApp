@@ -115,7 +115,7 @@ export default function StaffManagement() {
               <button
                 type="button"
                 onClick={() => setIsOpen(true)}
-                className="inline-flex items-center justify-center px-4 py-2 bg-[#952D8C] text-white rounded-lg  transition-colors"
+                className="inline-flex items-center justify-center px-4 py-2 bg-[#63bbb3] text-white rounded-lg  transition-colors"
               >
                 <Plus className={`w-4 h-4 ${isRTL ? "ml-2" : "mr-2"}`} />
                 {t("staff.add_staff", { defaultValue: "Add Staff" })}
@@ -155,7 +155,7 @@ export default function StaffManagement() {
                   })}
                   className={`w-full ${
                     isRTL ? "pr-10 pl-4" : "pl-10 pr-4"
-                  } h-10 rounded-lg border bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#952D8C]`}
+                  } h-10 rounded-lg border bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#63bbb3]`}
                 />
               </div>
             </div>
@@ -166,7 +166,7 @@ export default function StaffManagement() {
                 <select
                   className={`w-full h-10 appearance-none rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white ${
                     isRTL ? "pl-9 pr-3" : "pr-9 pl-3"
-                  } focus:outline-none focus:ring-2 focus:ring-[#952D8C]`}
+                  } focus:outline-none focus:ring-2 focus:ring-[#63bbb3]`}
                   value={roleFilter}
                   onChange={(e) => setRoleFilter(e.target.value)}
                 >
@@ -196,7 +196,7 @@ export default function StaffManagement() {
                 <select
                   className={`w-full h-10 appearance-none rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white ${
                     isRTL ? "pl-9 pr-3" : "pr-9 pl-3"
-                  } focus:outline-none focus:ring-2 focus:ring-[#952D8C]`}
+                  } focus:outline-none focus:ring-2 focus:ring-[#63bbb3]`}
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                 >
@@ -276,7 +276,7 @@ export default function StaffManagement() {
                       >
                         <td className="px-4 md:px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <div className="w-10 h-10 bg-[#952D8C] rounded-full flex items-center justify-center">
+                            <div className="w-10 h-10 bg-[#63bbb3] rounded-full flex items-center justify-center">
                               <span className="text-white font-medium text-sm">
                                 {getInitials(r.name)}
                               </span>
@@ -391,7 +391,7 @@ export default function StaffManagement() {
             </button>
             <button
               type="button"
-              className="px-3 py-1 rounded bg-[#952D8C] text-white"
+              className="px-3 py-1 rounded bg-[#63bbb3] text-white"
             >
               1
             </button>
@@ -581,7 +581,7 @@ function AddStaffModal({ onClose }) {
               value={form.username}
               onChange={(e) => onChange("username", e.target.value)}
               placeholder="e.g. johndoe"
-              className={`w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#952D8C] ${isRTL ? "text-right" : "text-left"}`}
+              className={`w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#63bbb3] ${isRTL ? "text-right" : "text-left"}`}
             />
           </Field>
 
@@ -596,7 +596,7 @@ function AddStaffModal({ onClose }) {
               value={form.password}
               onChange={(e) => onChange("password", e.target.value)}
               placeholder="••••••••"
-              className={`w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#952D8C] ${isRTL ? "text-right" : "text-left"}`}
+              className={`w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#63bbb3] ${isRTL ? "text-right" : "text-left"}`}
             />
           </Field>
 
@@ -610,7 +610,7 @@ function AddStaffModal({ onClose }) {
                 type="text"
                 value={form.first_name || ""}
                 onChange={(e) => onChange("first_name", e.target.value)}
-                className={`w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#952D8C] ${isRTL ? "text-right" : "text-left"}`}
+                className={`w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#63bbb3] ${isRTL ? "text-right" : "text-left"}`}
               />
             </Field>
             <Field
@@ -621,7 +621,7 @@ function AddStaffModal({ onClose }) {
                 type="text"
                 value={form.last_name || ""}
                 onChange={(e) => onChange("last_name", e.target.value)}
-                className={`w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#952D8C] ${isRTL ? "text-right" : "text-left"}`}
+                className={`w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#63bbb3] ${isRTL ? "text-right" : "text-left"}`}
               />
             </Field>
           </div>
@@ -637,7 +637,7 @@ function AddStaffModal({ onClose }) {
               value={form.email || ""}
               onChange={(e) => onChange("email", e.target.value)}
               placeholder="name@example.com"
-              className={`w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#952D8C] ${isRTL ? "text-right" : "text-left"}`}
+              className={`w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#63bbb3] ${isRTL ? "text-right" : "text-left"}`}
             />
           </Field>
 
@@ -651,7 +651,7 @@ function AddStaffModal({ onClose }) {
               type="date"
               value={form.date_joined}
               onChange={(e) => onChange("date_joined", e.target.value)}
-              className={`w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#952D8C] ${isRTL ? "text-right" : "text-left"}`}
+              className={`w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#63bbb3] ${isRTL ? "text-right" : "text-left"}`}
             />
           </Field>
 
@@ -664,7 +664,7 @@ function AddStaffModal({ onClose }) {
             <select
               value={form.role}
               onChange={(e) => onChange("role", e.target.value)}
-              className={`w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#952D8C] ${isRTL ? "text-right" : "text-left"}`}
+              className={`w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#63bbb3] ${isRTL ? "text-right" : "text-left"}`}
             >
               <option value="staff">
                 {t("staff.role.staff", { defaultValue: "Staff" })}
@@ -686,7 +686,7 @@ function AddStaffModal({ onClose }) {
             <button
               type="submit"
               disabled={createStatus === "loading"}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-[#952D8C] hover:bg-gradient-to-r disabled:opacity-60"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-[#63bbb3] hover:bg-gradient-to-r disabled:opacity-60"
             >
               <Save className="w-4 h-4" />
               {createStatus === "loading"

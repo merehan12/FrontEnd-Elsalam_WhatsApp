@@ -27,7 +27,7 @@ const TabBtn = ({ label, active, onClick }) => (
     onClick={onClick}
     className={`px-3 py-1.5 rounded-lg text-[13px] font-medium transition ${
       active
-        ? "bg-[#952D8C] text-white shadow"
+        ? "bg-[#63bbb3] text-white shadow"
         : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-600/70 hover:text-white"
     }`}
   >

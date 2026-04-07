@@ -226,7 +226,7 @@ export default function EditProfile() {
               type="text"
               value={formData.name}
               onChange={(e) => setFormData((p) => ({ ...p, name: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#952D8C] bg-white border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#63bbb3] bg-white border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             />
           </div>
 
@@ -239,7 +239,7 @@ export default function EditProfile() {
               type="text"
               value={formData.username}
               onChange={(e) => setFormData((p) => ({ ...p, username: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#952D8C] bg-white border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#63bbb3] bg-white border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             />
           </div>
 
@@ -252,7 +252,7 @@ export default function EditProfile() {
               type="email"
               value={formData.email}
               onChange={(e) => setFormData((p) => ({ ...p, email: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#952D8C] bg-white border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#63bbb3] bg-white border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             />
           </div>
 
@@ -265,7 +265,7 @@ export default function EditProfile() {
               type="tel"
               value={formData.phone}
               onChange={(e) => setFormData((p) => ({ ...p, phone: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#952D8C] bg-white border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#63bbb3] bg-white border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             />
           </div>
 
@@ -278,7 +278,7 @@ export default function EditProfile() {
               <select
                 value={formData.role}
                 onChange={(e) => setFormData((p) => ({ ...p, role: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#952D8C] bg-white border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#63bbb3] bg-white border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
                 <option value="staff">{t("staff.role.staff", { defaultValue: "Staff" })}</option>
                 <option value="manager">{t("staff.role.manager", { defaultValue: "Manager" })}</option>
@@ -299,7 +299,7 @@ export default function EditProfile() {
                   setFormData((p) => ({ ...p, is_active: e.target.value === "active" }))
                 }
                 className="w-full px-3 py-2 rounded-lg border focus:outline-none
-                           focus:ring-2 focus:ring-[#952D8C] bg-white border-gray-300
+                           focus:ring-2 focus:ring-[#63bbb3] bg-white border-gray-300
                            text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
                 <option value="active">{t("common.active", { defaultValue: "Active" })}</option>
@@ -321,7 +321,7 @@ export default function EditProfile() {
               type="button"
               onClick={handleSave}
               disabled={updateStatus === "loading"}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-[#952D8C] hover:bg-gradient-to-r hover:from-orange-500 hover:to-orange-600 disabled:opacity-60"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-[#63bbb3] hover:bg-gradient-to-r hover:from-orange-500 hover:to-orange-600 disabled:opacity-60"
             >
               <Save className="w-4 h-4" />
               {updateStatus === "loading"

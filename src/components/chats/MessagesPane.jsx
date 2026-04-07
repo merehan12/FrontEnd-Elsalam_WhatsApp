@@ -456,7 +456,7 @@ if (replyObj?.body?.text) return String(replyObj.body.text);
                 const replyBorderSide = isRTL ? "border-r-4" : "border-l-4";
                 const replyBorderColor = bubbleFromAgent
                   ? "border-white/70"
-                  : "border-[#952D8C]";
+                  : "border-[#63bbb3]";
 
                 return (
                   <div
@@ -469,7 +469,7 @@ if (replyObj?.body?.text) return String(replyObj.body.text);
                     <div
                       className={`max-w-[75%] px-3 py-2 rounded-lg shadow-sm ${
                         bubbleFromAgent
-                          ? "bg-[#952D8C] text-white"
+                          ? "bg-[#63bbb3] text-white"
                           : "bg-white border border-gray-200 text-gray-900 dark:bg-gray-700 dark:border-transparent dark:text-white"
                       }`}
                     >
