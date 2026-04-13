@@ -119,7 +119,7 @@ export default function Navbar({ onMenuClick }) {
               aria-haspopup="menu"
               aria-expanded={showProfileDropdown}
             >
-              <div className="w-8 h-8 bg-[#952D8C] rounded-full grid place-items-center">
+              <div className="w-8 h-8 bg-[#63bbb3] rounded-full grid place-items-center">
                 <User className="w-4 h-4 text-white" />
               </div>
               <span

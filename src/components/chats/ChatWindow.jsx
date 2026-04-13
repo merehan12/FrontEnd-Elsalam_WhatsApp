@@ -145,7 +145,7 @@ function ChatWindow({
               >
                 <ArrowLeft className="w-5 h-5 text-gray-700 dark:text-gray-300" />
               </button>
-              <div className="w-10 h-10 bg-[#952D8C] rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-[#63bbb3] rounded-full flex items-center justify-center">
                 <span className="text-white font-medium">
                   {selectedChatData.avatar}
                 </span>

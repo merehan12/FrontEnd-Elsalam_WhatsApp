@@ -178,7 +178,7 @@ export default function ReportsPage() {
   label={t("reports.assigned_chats")}
   value={stats.assignedChats}
   percent={assignedPercentage}
-  barColor="from-[#952D8C] to-[#7A236F]"
+  barColor="from-[#63bbb3] to-[#7A236F]"
   isRTL={isRTL}
 />
 

@@ -142,7 +142,7 @@ export default function Customers() {
                   )}
                   className={`w-full ${
                     isRTL ? "pr-10 pl-4" : "pl-10 pr-4"
-                  } h-10 rounded-lg border bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#952D8C]`}
+                  } h-10 rounded-lg border bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#63bbb3]`}
                 />
               </div>
 
@@ -156,7 +156,7 @@ export default function Customers() {
                     type="date"
                     value={createdDate}
                     onChange={(e) => setCreatedDate(e.target.value)}
-                    className="w-full h-9 rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-xs px-2 focus:outline-none focus:ring-2 focus:ring-[#952D8C]"
+                    className="w-full h-9 rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-xs px-2 focus:outline-none focus:ring-2 focus:ring-[#63bbb3]"
                   />
                 </div>
               </div>
@@ -168,7 +168,7 @@ export default function Customers() {
                 <select
                   className={`w-full h-10 appearance-none rounded-lg border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white ${
                     isRTL ? "pl-9 pr-3" : "pr-9 pl-3"
-                  } focus:outline-none focus:ring-2 focus:ring-[#952D8C]`}
+                  } focus:outline-none focus:ring-2 focus:ring-[#63bbb3]`}
                   value={pageSize}
                   onChange={(e) =>
                     dispatch(setCustomersPageSize(Number(e.target.value)))
@@ -219,7 +219,7 @@ export default function Customers() {
                 <button
                   type="button"
                   onClick={() => setCreatedDate("")}
-                  className="px-2 py-0.5 rounded-full border border-transparent hover:border-[#952D8C] text-[#952D8C] hover:bg-[#952D8C]/10"
+                  className="px-2 py-0.5 rounded-full border border-transparent hover:border-[#63bbb3] text-[#63bbb3] hover:bg-[#63bbb3]/10"
                 >
                   {t("common.clear", { defaultValue: "Clear" })}
                 </button>
@@ -237,7 +237,7 @@ export default function Customers() {
           >
             {t("pagination.previous")}
           </button>
-          <span className="px-3 py-1 rounded bg-[#952D8C] text-white text-sm">
+          <span className="px-3 py-1 rounded bg-[#63bbb3] text-white text-sm">
             {page} / {totalPages}
           </span>
           <button
@@ -321,7 +321,7 @@ export default function Customers() {
                       >
                         <td className="px-4 md:px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <div className="w-10 h-10 bg-[#952D8C] rounded-full flex items-center justify-center">
+                            <div className="w-10 h-10 bg-[#63bbb3] rounded-full flex items-center justify-center">
                               <span className="text-white font-medium text-sm">
                                 {avatar}
                               </span>

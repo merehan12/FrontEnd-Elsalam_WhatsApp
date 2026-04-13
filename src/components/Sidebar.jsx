@@ -66,11 +66,11 @@ export default function Sidebar({ isOpen, onClose }) {
                 : "space-x-3"
             }`}
           >
-            <div className="w-8 h-8 bg-[#952D8C] rounded-lg grid place-items-center">
+            <div className="w-8 h-8 bg-[#63bbb3] rounded-lg grid place-items-center">
               <MessageSquare className="w-5 h-5 text-white" />
             </div>
             <span className="font-bold text-lg text-gray-800 dark:text-white">
-            Alaylaa WhatsApp 
+            Salam WhatsApp 
             </span>
           </div>
           <button
@@ -95,7 +95,7 @@ export default function Sidebar({ isOpen, onClose }) {
                 className={`w-full text-left flex items-center px-4 py-3 mb-2 rounded-lg transition-colors
                 ${
                   active
-                    ? "bg-[#952D8C] text-white"
+                    ? "bg-[#63bbb3] text-white"
                     : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`}
               >
@@ -123,7 +123,7 @@ export default function Sidebar({ isOpen, onClose }) {
                 className={`w-full text-left flex items-center px-4 py-3 mb-2 rounded-lg transition-colors
                 ${
                   active
-                    ? "bg-[#952D8C] text-white"
+                    ? "bg-[#63bbb3] text-white"
                     : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`}
               >

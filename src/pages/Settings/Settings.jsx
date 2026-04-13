@@ -76,7 +76,7 @@ export default function Settings() {
             <nav className="space-y-2">
               <a
                 href="#profile"
-                className="flex items-center px-3 py-2 rounded-lg text-white bg-[#952D8C] hover:bg-gradient-to-r transition-colors"
+                className="flex items-center px-3 py-2 rounded-lg text-white bg-[#63bbb3] hover:bg-gradient-to-r transition-colors"
               >
                 <User className={`w-4 h-4 ${isRTL ? "ml-3" : "mr-3"}`} />
                 {t("settings.profile_settings")}
@@ -109,7 +109,7 @@ export default function Settings() {
                       type="text"
                       value={formData.fullName || ""}
                       onChange={(e) => handleInputChange("fullName", e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#952D8C] bg-white border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                      className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#63bbb3] bg-white border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     />
                   </div>
 
@@ -121,7 +121,7 @@ export default function Settings() {
                       type="email"
                       value={formData.email || ""}
                       onChange={(e) => handleInputChange("email", e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#952D8C] bg-white border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                      className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#63bbb3] bg-white border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     />
                   </div>
 
@@ -133,7 +133,7 @@ export default function Settings() {
                       type="tel"
                       value={formData.phone || ""}
                       onChange={(e) => handleInputChange("phone", e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#952D8C] bg-white border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                      className="w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-[#63bbb3] bg-white border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     />
                   </div>
 
@@ -174,7 +174,7 @@ export default function Settings() {
                       onClick={() => switchLanguage("en")}
                       className={`px-4 py-2 rounded-lg border transition-colors ${
                         currentLanguage === "en"
-                          ? "border-[#952D8C] bg-[#952D8C] text-white hover:bg-gradient-to-r"
+                          ? "border-[#63bbb3] bg-[#63bbb3] text-white hover:bg-gradient-to-r"
                           : "border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
                       }`}
                     >
@@ -185,7 +185,7 @@ export default function Settings() {
                       onClick={() => switchLanguage("ar")}
                       className={`px-4 py-2 rounded-lg border transition-colors ${
                         currentLanguage === "ar"
-                          ? "border-[#952D8C] bg-[#952D8C] text-white hover:bg-gradient-to-r"
+                          ? "border-[#63bbb3] bg-[#63bbb3] text-white hover:bg-gradient-to-r"
                           : "border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
                       }`}
                     >
