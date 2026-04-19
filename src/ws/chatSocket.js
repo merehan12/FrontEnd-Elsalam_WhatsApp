@@ -1,7 +1,7 @@
 export function buildChatUrl(conversationId, token, baseOverride) {
   const base =
     (baseOverride && baseOverride.replace(/\/+$/, "")) ||
-    "wss://wh-alyaa-backend-23edk.ondigitalocean.app";
+    "wss:///wh-land-backend-goet3.ondigitalocean.app";
   const u = new URL(
     `${base}/ws/chat/${encodeURIComponent(conversationId)}/`
   );
@@ -17,7 +17,7 @@ export function buildChatUrl(conversationId, token, baseOverride) {
 export function buildHubUrl(token, baseOverride) {
   const base =
     (baseOverride && baseOverride.replace(/\/+$/, "")) ||
-    "wss://wh-alyaa-backend-23edk.ondigitalocean.app";
+    "wss:///wh-land-backend-goet3.ondigitalocean.app";
 
   const u = new URL(`${base}/ws/agent/`);
   if (token) {

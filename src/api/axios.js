@@ -6,7 +6,7 @@ import axios from "axios";
 export const API_BASE =
   (process.env.REACT_APP_API_URL &&
     process.env.REACT_APP_API_URL.replace(/\/+$/, "")) ||
- "https://wh-alyaa-backend-23edk.ondigitalocean.app/api"; // <= backend /api
+ "https://wh-land-backend-goet3.ondigitalocean.app/api"; // <= backend /api
 
 // أصل الدومين بدون /api (مثلاً https://chat-backend-.../ )
 export const API_ORIGIN = API_BASE.replace(/\/+api\/?$/, "/");
