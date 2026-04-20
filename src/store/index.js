@@ -6,7 +6,7 @@ import customersReducer from "./slices/customersSlice";
 import usersReducer from "./slices/usersSlice";
 import timelineReducer from "./slices/timelineSlice";
 import { mediaResolverMiddleware } from "./middleware/mediaResolverMiddleware";
-
+import waTemplatesReducer from "./slices/waTemplatesSlice";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -15,6 +15,7 @@ export const store = configureStore({
     messages:messagesReducer ,
     customers: customersReducer,
     timeline: timelineReducer,
+    waTemplates: waTemplatesReducer,
  },
   middleware: (getDefault) =>
     getDefault({ serializableCheck: false }).concat(mediaResolverMiddleware),

@@ -24,6 +24,7 @@ export default function Sidebar({ isOpen, onClose }) {
 
   const items = [
     { path: "/chats", icon: MessageSquare, label: t("sidebar.chats") },
+    { path: "/templates/broadcast", icon: MessageSquare, label: "Templates" },
     { path: "/reports", icon: BarChart3, label: t("sidebar.reports") },
     { path: "/staff", icon: Users, label: t("sidebar.staff") },
     { path: "/customers", icon: Users, label: t("sidebar.customers") },

@@ -16,6 +16,7 @@ import EditProfile from "./pages/EditProfile/EditProfile";
 import UserProfilePage from "./pages/ProfilePage/UserProfilePage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import { refreshTokensThunk } from "./store/slices/authSlice";
+import TemplateBroadcastPage from "./pages/TemplateBroadcastPage/TemplateBroadcastPage";
 function AppInner() {
   const dispatch = useDispatch();
   const { access, refresh } = useSelector((s) => s.auth);
@@ -54,6 +55,7 @@ function AppInner() {
             <Route path="/edit-profile" element={<EditProfile />} />
             <Route path="/users/:id" element={<UserProfilePage />} />
             <Route path="/users/:id/edit" element={<EditProfile />} />
+            <Route path="/templates/broadcast" element={<TemplateBroadcastPage />} />
           </Route>
         </Route>
 

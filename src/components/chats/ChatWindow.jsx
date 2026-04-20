@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { selectIsSendingByConv } from "../../store/slices/messagesSlice";
 import MessagesPane from "./MessagesPane";
 import Composer from "./Composer";
+import TemplatePickerModal from "./TemplatePickerModal";
 
 function ChatWindow({
   isRTL,
@@ -393,7 +394,13 @@ function ChatWindow({
             onSent={() =>
               typeof setReplyTarget === "function" && setReplyTarget(null)
             }
+
           />
+          <TemplatePickerModal
+  conversationId={selectedChat}
+  t={t}
+  isRTL={isRTL}
+/>
         </>
       )}
     </div>

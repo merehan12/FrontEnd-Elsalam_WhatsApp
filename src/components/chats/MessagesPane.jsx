@@ -1,5 +1,3 @@
-
-
 // src/components/chats/MessagesPane.jsx
 import React, { useEffect, useRef, useLayoutEffect, useMemo } from "react";
 import { Loader2 } from "lucide-react";
@@ -16,6 +14,56 @@ import {
 import { toApiUrl } from "../../api/axios";
 
 /* ========== Helpers moved outside component ========== */
+const getTemplateFromMsg = (msg) => {
+  if (!msg) return null;
+
+  const tpl =
+    msg.template ||
+    msg.template_info ||
+    msg.body?.template ||
+    msg.raw?.template_info ||
+    null;
+
+  if (!tpl) return null;
+
+  return {
+    id: tpl?.id ?? null,
+    name: tpl?.name ?? null,
+    language: tpl?.language ?? null,
+    category: tpl?.category ?? null,
+    components: Array.isArray(tpl?.components)
+      ? tpl.components
+      : Array.isArray(tpl?.components_json)
+        ? tpl.components_json
+        : [],
+  };
+};
+
+const getTemplateHeader = (template) => {
+  const comps = template?.components || [];
+  return comps.find((c) => String(c?.type || "").toUpperCase() === "HEADER");
+};
+
+const getTemplateBody = (template) => {
+  const comps = template?.components || [];
+  return comps.find((c) => String(c?.type || "").toUpperCase() === "BODY");
+};
+
+const getTemplateButtons = (template) => {
+  const comps = template?.components || [];
+  const block = comps.find(
+    (c) => String(c?.type || "").toUpperCase() === "BUTTONS",
+  );
+  return Array.isArray(block?.buttons) ? block.buttons : [];
+};
+
+const iconForTemplateButton = (type) => {
+  const t = String(type || "").toUpperCase();
+  if (t === "QUICK_REPLY") return "↩️";
+  if (t === "URL") return "🔗";
+  if (t === "PHONE_NUMBER") return "📞";
+  return "▫️";
+};
 
 const labelForKind = (kind) => {
   if (kind === "image") return "[📷 صورة]";
@@ -82,7 +130,7 @@ const getMediaFromMsg = (msg) => {
   const textMarker = String(
     msg.text ||
       (typeof msg.body === "string" ? msg.body : "") ||
-      (typeof msg.raw?.body === "string" ? msg.raw.body : "")
+      (typeof msg.raw?.body === "string" ? msg.raw.body : ""),
   ).toUpperCase();
 
   const isImageMarker =
@@ -108,7 +156,7 @@ const getMediaFromMsg = (msg) => {
   const safeUrl = ensureAbsUrl(url);
 
   let kind = String(
-    baseMedia.kind || baseMedia.type || msg.type || msg.body?.type || ""
+    baseMedia.kind || baseMedia.type || msg.type || msg.body?.type || "",
   ).toLowerCase();
 
   if (
@@ -172,7 +220,7 @@ function MessagesPane({
               messageId: m.id,
               client_msg_id: m.client_msg_id,
               mediaId: mid,
-            })
+            }),
           );
         }
       }
@@ -274,7 +322,7 @@ function MessagesPane({
       const d = pickMessageDate(m);
       const k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
         2,
-        "0"
+        "0",
       )}-${String(d.getDate()).padStart(2, "0")}`;
       if (!map.has(k)) map.set(k, []);
       map.get(k).push({ m, d });
@@ -299,9 +347,10 @@ function MessagesPane({
         </div>
       )}
 
-      {messagesLoading && (!visibleMessages || visibleMessages.length === 0) && (
-        <div className="p-4 text-sm text-gray-500">Loading…</div>
-      )}
+      {messagesLoading &&
+        (!visibleMessages || visibleMessages.length === 0) && (
+          <div className="p-4 text-sm text-gray-500">Loading…</div>
+        )}
 
       {!messagesLoading &&
         grouped.map(({ key, arr }) => {
@@ -316,16 +365,34 @@ function MessagesPane({
 
                 const media = getMediaFromMsg(m);
                 const hasMedia = !!media?.url;
+                const template = getTemplateFromMsg(m);
+                const isTemplate =
+                  String(m?.type || "").toLowerCase() === "template" ||
+                  !!template;
 
+                const templateHeader = isTemplate
+                  ? getTemplateHeader(template)
+                  : null;
+                const templateBody = isTemplate
+                  ? getTemplateBody(template)
+                  : null;
+                const templateButtons = isTemplate
+                  ? getTemplateButtons(template)
+                  : [];
                 let extracted =
+                  (isTemplate
+                    ? templateBody?.text ||
+                      templateHeader?.text ||
+                      template?.name ||
+                      ""
+                    : "") ||
                   extractText(m) ||
                   asTextSafe(
                     m?.body?.raw?.message?.text?.body ||
                       m?.body?.raw?.messages?.[0]?.text?.body ||
                       m?.body?.raw?.text?.body ||
-                      m?.text
+                      m?.text,
                   );
-
                 if (isPlaceholderText(extracted)) extracted = "";
 
                 const caption =
@@ -341,8 +408,7 @@ function MessagesPane({
                   bodyText =
                     extracted && !isPlaceholderText(extracted) ? extracted : "";
 
-                if (!hasMedia && !bodyText) return null;
-
+                if (!hasMedia && !bodyText && !isTemplate) return null;
                 const pending = isPending(m);
                 const failed = isFailed(m);
                 const statusLower = String(m?.status || "").toLowerCase();
@@ -372,7 +438,9 @@ function MessagesPane({
                   }
                   if (["sent", "delivered", "read"].includes(statusLower)) {
                     return (
-                      <span className="text-[10px] opacity-70">{statusLower}</span>
+                      <span className="text-[10px] opacity-70">
+                        {statusLower}
+                      </span>
                     );
                   }
                   return m?.status ? (
@@ -382,31 +450,35 @@ function MessagesPane({
                   ) : null;
                 })();
 
-                const timeLabel = formatTimeOnly(
-                  d,
-                  isRTL ? "ar-EG" : "en-US"
-                );
-              const replyId =
-  (typeof m?.reply_to === "object" ? m.reply_to?.id : m?.reply_to) ??
-  m?.replyTo ??
-  m?.reply_id ??
-  m?.raw?.reply_to ??
-  (typeof m?.raw?.reply_to === "object" ? m.raw.reply_to?.id : null) ??
-  null;
+                const timeLabel = formatTimeOnly(d, isRTL ? "ar-EG" : "en-US");
+                const replyId =
+                  (typeof m?.reply_to === "object"
+                    ? m.reply_to?.id
+                    : m?.reply_to) ??
+                  m?.replyTo ??
+                  m?.reply_id ??
+                  m?.raw?.reply_to ??
+                  (typeof m?.raw?.reply_to === "object"
+                    ? m.raw.reply_to?.id
+                    : null) ??
+                  null;
 
-const replyObj =
-  (m?.reply && typeof m.reply === "object" ? m.reply : null) ||
-  (typeof m?.reply_to === "object" ? m.reply_to : null) || // 👈 مهم لحالتك
-  (m?.raw?.reply && typeof m.raw.reply === "object" ? m.raw.reply : null) ||
-  null;
+                const replyObj =
+                  (m?.reply && typeof m.reply === "object" ? m.reply : null) ||
+                  (typeof m?.reply_to === "object" ? m.reply_to : null) || // 👈 مهم لحالتك
+                  (m?.raw?.reply && typeof m.raw.reply === "object"
+                    ? m.raw.reply
+                    : null) ||
+                  null;
 
                 const targetMsg =
                   !replyObj && replyId != null
                     ? msgById.get(String(replyId)) || null
                     : null;
 
-                const replyMedia =
-                  targetMsg ? getMediaFromMsg(targetMsg) : null;
+                const replyMedia = targetMsg
+                  ? getMediaFromMsg(targetMsg)
+                  : null;
 
                 const computedReplyType = (() => {
                   if (replyObj?.type) return String(replyObj.type);
@@ -434,8 +506,7 @@ const replyObj =
 
                   if (fromObj) return fromObj;
                   if (replyObj?.text) return String(replyObj.text);
-if (replyObj?.body?.text) return String(replyObj.body.text);
-
+                  if (replyObj?.body?.text) return String(replyObj.body.text);
 
                   if (targetMsg) {
                     if (replyMedia?.url) return labelForKind(replyMedia.kind);
@@ -473,11 +544,12 @@ if (replyObj?.body?.text) return String(replyObj.body.text);
                           : "bg-white border border-gray-200 text-gray-900 dark:bg-gray-700 dark:border-transparent dark:text-white"
                       }`}
                     >
-                      {bubbleFromAgent && (m.author_username || m.author_id) && (
-                        <div className="text-[11px] mb-1 text-white/80">
-                          {m.author_username || `Agent #${m.author_id}`}
-                        </div>
-                      )}
+                      {bubbleFromAgent &&
+                        (m.author_username || m.author_id) && (
+                          <div className="text-[11px] mb-1 text-white/80">
+                            {m.author_username || `Agent #${m.author_id}`}
+                          </div>
+                        )}
 
                       {hasReply && (
                         <div
@@ -491,7 +563,9 @@ if (replyObj?.body?.text) return String(replyObj.body.text);
                           ].join(" ")}
                           onClick={() => {
                             if (!replyId) return;
-                            const el = document.getElementById(`msg-${replyId}`);
+                            const el = document.getElementById(
+                              `msg-${replyId}`,
+                            );
                             if (el)
                               el.scrollIntoView({
                                 behavior: "smooth",
@@ -523,24 +597,107 @@ if (replyObj?.body?.text) return String(replyObj.body.text);
                               </span>
                             )}
                             <span className="truncate">
-                              {computedReplyText || (isRTL ? "رسالة" : "Message")}
+                              {computedReplyText ||
+                                (isRTL ? "رسالة" : "Message")}
                             </span>
                           </div>
                         </div>
                       )}
 
-                      {hasMedia && (
-                        <SmartMedia
-                          media={media}
-                          caption={caption}
-                          name={media?.filename || labelForKind(media?.kind)}
-                          status={m?.status}
-                          onLoaded={() => scheduleScrollIfSticky(true)}
-                        />
-                      )}
+                      {isTemplate ? (
+                        <div className="space-y-3">
+                          <div
+                            className={`rounded-xl border px-3 py-3 ${
+                              bubbleFromAgent
+                                ? "bg-white/10 border-white/20"
+                                : "bg-gray-50 border-gray-200 dark:bg-gray-800/60 dark:border-gray-600"
+                            }`}
+                          >
+                            <div
+                              className={`text-[11px] font-semibold mb-2 ${
+                                bubbleFromAgent
+                                  ? "text-white/80"
+                                  : "text-gray-500 dark:text-gray-300"
+                              }`}
+                            >
+                              Template
+                              {template?.name ? ` • ${template.name}` : ""}
+                              {template?.language
+                                ? ` • ${template.language}`
+                                : ""}
+                            </div>
 
-                      {bodyText && (
-                        <p className="text-sm break-words">{asTextSafe(bodyText)}</p>
+                            {templateHeader?.text && (
+                              <div
+                                className={`text-sm font-semibold mb-2 ${
+                                  bubbleFromAgent
+                                    ? "text-white"
+                                    : "text-gray-900 dark:text-white"
+                                }`}
+                              >
+                                {templateHeader.text}
+                              </div>
+                            )}
+
+                            {(templateBody?.text || bodyText) && (
+                              <div
+                                className={`text-sm whitespace-pre-wrap break-words ${
+                                  bubbleFromAgent
+                                    ? "text-white"
+                                    : "text-gray-900 dark:text-white"
+                                }`}
+                              >
+                                {asTextSafe(templateBody?.text || bodyText)}
+                              </div>
+                            )}
+
+                            {!!templateButtons.length && (
+                              <div className="mt-3 flex flex-wrap gap-2">
+                                {templateButtons.map((btn, idx) => (
+                                  <div
+                                    key={idx}
+                                    className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-xs border ${
+                                      bubbleFromAgent
+                                        ? "border-white/20 bg-white/10 text-white"
+                                        : "border-gray-200 bg-white text-gray-700 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                                    }`}
+                                  >
+                                    <span>
+                                      {iconForTemplateButton(btn?.type)}
+                                    </span>
+                                    <span>
+                                      {btn?.text ||
+                                        btn?.phone_number ||
+                                        btn?.url ||
+                                        btn?.type ||
+                                        "Button"}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          {hasMedia && (
+                            <SmartMedia
+                              media={media}
+                              caption={caption}
+                              name={
+                                media?.filename || labelForKind(media?.kind)
+                              }
+                              status={m?.status}
+                              onLoaded={() => scheduleScrollIfSticky(true)}
+                            />
+                          )}
+
+                          {bodyText && (
+                            <p className="text-sm break-words">
+                              {asTextSafe(bodyText)}
+                            </p>
+                          )}
+                        </>
                       )}
 
                       <div className="mt-1 flex items-center justify-between gap-2">
@@ -559,7 +716,9 @@ if (replyObj?.body?.text) return String(replyObj.body.text);
                           <button
                             type="button"
                             className={`text-[11px] underline underline-offset-2 ${
-                              bubbleFromAgent ? "text-white/85" : "text-gray-500"
+                              bubbleFromAgent
+                                ? "text-white/85"
+                                : "text-gray-500"
                             } hover:opacity-100 opacity-80`}
                             onClick={() => onReply?.(m)}
                             title={isRTL ? "رد" : "Reply"}
@@ -580,11 +739,12 @@ if (replyObj?.body?.text) return String(replyObj.body.text);
 
       <div ref={messagesEndRef} />
 
-      {!messagesLoading && (!visibleMessages || visibleMessages.length === 0) && (
-        <div className="text-center text-sm text-gray-500 dark:text-gray-400">
-          {t?.("no_messages", "No messages yet")}
-        </div>
-      )}
+      {!messagesLoading &&
+        (!visibleMessages || visibleMessages.length === 0) && (
+          <div className="text-center text-sm text-gray-500 dark:text-gray-400">
+            {t?.("no_messages", "No messages yet")}
+          </div>
+        )}
     </div>
   );
 }

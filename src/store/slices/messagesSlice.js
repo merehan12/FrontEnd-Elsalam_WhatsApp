@@ -4,7 +4,6 @@ import api, { toApiUrl } from "../../api/axios";
 const CAN_LS = false;
 const LS_PREFIX = "chat-local-msgs:";
 const lsKey = (convId) => `${LS_PREFIX}${String(convId)}`;
-
 const lsLoad = () => {
   return []; // لا ترجع أي رسائل محلية
 };
@@ -17,9 +16,6 @@ const lsUpsert = () => {
 const lsRemoveById = () => {
   // لا شيء
 };
-
-
-
 
 // React لما تفتح ChatWebSocket سجّليه في window.__CHAT_SOCKETS__[convId]
 const getChatSocket = (convId) => {
@@ -163,10 +159,35 @@ const extractText = (m) => {
   //   return m.reply.text;
   // }
 
+    if (typeof m?.template_info?.name === "string" && m.template_info.name.trim()) {
+    return `[Template] ${m.template_info.name}`;
+  }
+
+  if (typeof m?.template?.name === "string" && m.template.name.trim()) {
+    return `[Template] ${m.template.name}`;
+  }
+
+  if (
+    typeof m?.body?.template?.name === "string" &&
+    m.body.template.name.trim()
+  ) {
+    return `[Template] ${m.body.template.name}`;
+  }
+
   return "";
 };
-
+const templateDetailPreviewText = (m) => {
+  const name =
+    m?.template?.name ||
+    m?.template_info?.name ||
+    m?.raw?.template_info?.name ||
+    null;
+  return name ? `[Template] ${name}` : "";
+};
 const previewTextOf = (m) => {
+  const templateTxt = templateDetailPreviewText(m);
+  if (templateTxt) return templateTxt;
+
   const txt =
     extractText(m) ||
     (typeof m?.text === "string" ? m.text : "") ||
@@ -187,23 +208,6 @@ const isInboundCustomer = (m = {}) => {
   return true;
 };
 
-/* ========================= Inbound detector (normalizer) ========================= */
-// const isInbound = (m) => {
-//   const d = String(m?.direction || m?.dir || "").toLowerCase();
-//   if (d.includes("in")) return true;
-//   if (d.includes("out")) return false;
-
-//   if (typeof m?.inbound === "boolean") return m.inbound;
-//   if (typeof m?.outbound === "boolean") return !m.outbound;
-
-//   const fromMe =
-//     m?.from_me === true ||
-//     m?.is_from_me === true ||
-//     String(
-//       m?.author || m?.sender || m?.sender_role || ""
-//     ).toLowerCase() === "agent";
-//   return !fromMe;
-// };
 
 const isInbound = (m = {}) => {
   const d = String(m?.direction || m?.dir || "").toLowerCase();
@@ -464,9 +468,6 @@ const rawText =
   (typeof m?.body === "string" ? m.body : "") ||
   (typeof m?.message === "string" ? m.message : "") ||
   (typeof m?.text === "string" ? m.text : "");
-
-
-
   // التوقيت
   const ts =
     src?.ts ||
@@ -552,9 +553,31 @@ const rawText =
   } else if (src?.body && typeof src.body === "object") {
     body = { ...src.body };
   }
+  // ================= TEMPLATE SUPPORT =================
+  const templateSource =
+    src?.template_info ||
+    src?.template ||
+    src?.body?.template ||
+    null;
 
-  const finalType = body?.type || src?.type || src?.body?.type || (media ? "media" : "text");
-
+  const template = templateSource
+    ? {
+        id: templateSource?.id ?? null,
+        meta_template_id: templateSource?.meta_template_id ?? null,
+        name: templateSource?.name ?? null,
+        language: templateSource?.language ?? null,
+        category: templateSource?.category ?? null,
+        components: Array.isArray(templateSource?.components)
+          ? templateSource.components
+          : Array.isArray(templateSource?.components_json)
+          ? templateSource.components_json
+          : [],
+      }
+    : null;
+  const finalType =
+    template
+      ? "template"
+      : body?.type || src?.type || src?.body?.type || (media ? "media" : "text");
   // ===================== ✅ Reply normalize (كل الحالات) =====================
 
   // A) reply_to ممكن يبقى رقم أو object (لما العميل يرد)
@@ -627,7 +650,7 @@ const rawText =
     author_username,
     body,
     media,
-    
+        template,
   meta_msg_id: src?.meta_msg_id || null,
   server_id: src?.id ?? null,
     // ✅ هنا المهم
@@ -657,28 +680,6 @@ const sortMessages = (arr) =>
   return serverItems;
 };
 
-// const lsMergeWithServer = (convId, serverItems = []) => {
-//   const local = lsLoad(convId);
-//   if (!local.length) return serverItems;
-
-//   const byId = new Map(serverItems.map((m) => [String(m.id), m]));
-//   const byClient = new Map(
-//     serverItems
-//       .filter((m) => m.client_msg_id)
-//       .map((m) => [m.client_msg_id, m])
-//   );
-
-//   for (const lm of local) {
-//     const fixed = lm.client_msg_id && byClient.get(lm.client_msg_id);
-//     if (fixed) {
-//       byId.set(String(fixed.id), { ...fixed });
-//     } else {
-//       const id = String(lm.id);
-//       if (!byId.has(id)) byId.set(id, lm);
-//     }
-//   }
-//   return Array.from(byId.values());
-// };
 const resolveReplyIdsInPlace = (items = []) => {
   const metaToId = new Map();
   for (const m of items) {
@@ -1167,48 +1168,73 @@ export const sendMedia = createAsyncThunk(
     },
   }
 );
+export const sendTemplateMessage = createAsyncThunk(
+  "messages/sendTemplateMessage",
+  async (
+    { conversationId, templateDetail, body_parameters = [] },
+    { rejectWithValue }
+  ) => {
+    try {
+      const { data } = await api.post("/wa-templates/send/conversation/", {
+        conversation_id: String(conversationId),
+        template_id: templateDetail.id,
+        body_parameters,
+      });
 
-/* ====================== Upsert helper (مهم للميديا) ====================== */
-// function upsertMessageInState(state, convId, partialRaw) {
-//   const cid = String(convId);
-//   if (!state.byConv[cid]) state.byConv[cid] = [];
+      return {
+        conversationId: String(conversationId),
+        conversation_id: data?.data?.conversation_id ?? conversationId,
+        status: data?.data?.status || "queued",
+        message_id: data?.data?.message_id ?? null,
+        job_id: data?.data?.job_id ?? null,
+        meta_limit_note: data?.data?.meta_limit_note ?? null,
+      };
+    } catch (err) {
+      return rejectWithValue({
+        conversationId: String(conversationId),
+        error:
+          err?.response?.data?.message ||
+          err?.response?.data?.detail ||
+          err?.message ||
+          "Failed to send template",
+      });
+    }
+  },
+  {
+    getPendingMeta: ({ arg, requestId }) => {
+      const templateDetail = arg?.templateDetail || {};
+      const bodyParameters = Array.isArray(arg?.body_parameters)
+        ? arg.body_parameters
+        : [];
 
-//   const norm = normalizeMessage(partialRaw, cid);
-
-//   const arr = state.byConv[cid];
-//   const byId = String(norm.id);
-//   let idx = arr.findIndex((m) => String(m.id) === byId);
-//   if (idx === -1 && norm.client_msg_id) {
-//     idx = arr.findIndex((m) => m.client_msg_id === norm.client_msg_id);
-//   }
-
-//   if (idx === -1) {
-//     arr.push(norm);
-//   } else {
-//     const prev = arr[idx] || {};
-//     arr[idx] = {
-//       ...prev,
-//       ...norm,
-//       body: norm.body
-//         ? { ...(prev.body || {}), ...norm.body }
-//         : prev.body,
-//       media: norm.media
-//         ? { ...(prev.media || {}), ...norm.media }
-//         : prev.media,
-//       text:
-//         typeof norm.text === "string" && norm.text.length
-//           ? norm.text
-//           : prev.text,
-//       status: norm.status || prev.status,
-//     };
-//   }
-
-//   sortMessages(state.byConv[cid]);
-//   const last = state.byConv[cid][state.byConv[cid].length - 1];
-//   if (last?.timestamp)
-//     state.lastTsByConv[cid] = new Date(last.timestamp).toISOString();
-//   state.lastTextByConv[cid] = previewTextOf(last);
-// }
+      return {
+        temp: {
+          id: `template-local-${requestId}`,
+          client_msg_id: `tpl_${requestId}`,
+          conversation_id: String(arg.conversationId),
+          conversation: String(arg.conversationId),
+          sender: "agent",
+          direction: "out",
+          type: "template",
+          status: "sending",
+          timestamp: new Date().toISOString(),
+          text: "",
+          template_info: {
+            id: templateDetail?.id ?? null,
+            meta_template_id: templateDetail?.meta_template_id ?? null,
+            name: templateDetail?.name ?? null,
+            language: templateDetail?.language ?? null,
+            category: templateDetail?.category ?? null,
+            components_json: Array.isArray(templateDetail?.components_json)
+              ? templateDetail.components_json
+              : [],
+            body_parameters: bodyParameters,
+          },
+        },
+      };
+    },
+  }
+);
 
 function upsertMessageInState(state, convId, partialRaw) {
   const cid = String(convId);
@@ -1296,11 +1322,12 @@ const messagesSlice = createSlice({
 
   // 2) لو الرسالة جاية من الباك وفيه local-* بنفس client_msg_id → شيل الـ local
   if (idx === -1 && incoming.client_msg_id) {
-    const localIdx = list.findIndex(
-      (m) =>
-        String(m.id).startsWith("local-") &&
-        m.client_msg_id === incoming.client_msg_id
-    );
+  const localIdx = list.findIndex(
+  (m) =>
+    (String(m.id).startsWith("local-") ||
+      String(m.id).startsWith("template-local-")) &&
+    m.client_msg_id === incoming.client_msg_id
+);
     if (localIdx !== -1) idx = localIdx;
   }
 
@@ -1417,6 +1444,7 @@ const messagesSlice = createSlice({
         media,
         text,
         status,
+        template,
       } = action.payload || {};
       const cid = String(conversationId || "");
       if (!cid || !state.byConv[cid]) return;
@@ -1447,6 +1475,12 @@ const messagesSlice = createSlice({
       }
       if (typeof text === "string") msg.text = text;
       if (status) msg.status = status;
+            if (template) {
+        msg.template = { ...(msg.template || {}), ...template };
+        if (!msg.type || msg.type === "text") {
+          msg.type = "template";
+        }
+      }
     },
   },
 
@@ -1669,6 +1703,84 @@ const messagesSlice = createSlice({
         }
       })
 
+            /* sendTemplateMessage */
+  /* sendTemplateMessage */
+.addCase(sendTemplateMessage.pending, (state, action) => {
+  const temp = action.meta?.temp;
+  if (!temp) return;
+
+  const key = String(temp.conversation_id);
+  if (!state.byConv[key]) state.byConv[key] = [];
+
+  const tempTemplateId = temp?.template_info?.id ?? null;
+
+  state.byConv[key] = (state.byConv[key] || []).filter((m) => {
+    const isLocalTemplate = String(m?.id || "").startsWith("template-local-");
+    const sameTemplateId =
+      (m?.template?.id ?? m?.raw?.template_info?.id ?? null) === tempTemplateId;
+
+    if (isLocalTemplate && sameTemplateId) {
+      return false;
+    }
+    return true;
+  });
+
+  const normTemp = normalizeMessage(temp, key);
+  state.byConv[key].push(normTemp);
+  sortMessages(state.byConv[key]);
+
+  state.sendingByConv[key] = true;
+  state.error[key] = null;
+
+  state.lastTextByConv[key] =
+    templateDetailPreviewText(normTemp) || "[Template]";
+  state.lastTsByConv[key] = new Date(normTemp.timestamp).toISOString();
+})
+.addCase(sendTemplateMessage.fulfilled, (state, action) => {
+  const key = String(action.payload?.conversationId || "");
+  if (!key) return;
+
+  state.sendingByConv[key] = false;
+
+  const arr = state.byConv[key] || [];
+  for (let i = arr.length - 1; i >= 0; i--) {
+    const m = arr[i];
+    if (
+      String(m.id).startsWith("template-local-") &&
+      (m.status === "sending" || !m.status)
+    ) {
+      m.status = action.payload?.status || "queued";
+
+      if (action.payload?.message_id != null) {
+        m.id = action.payload.message_id;
+        m.server_id = action.payload.message_id;
+      }
+
+      if (action.payload?.conversation_id != null) {
+        m.conversation_id = String(action.payload.conversation_id);
+      }
+
+      break;
+    }
+  }
+})
+.addCase(sendTemplateMessage.rejected, (state, action) => {
+  const key = String(action.payload?.conversationId || "");
+  if (!key) return;
+
+  state.sendingByConv[key] = false;
+  state.error[key] =
+    action.payload?.error || "Failed to send template";
+
+  const arr = state.byConv[key] || [];
+  for (let i = arr.length - 1; i >= 0; i--) {
+    const m = arr[i];
+    if (String(m.id).startsWith("template-local-")) {
+      m.status = "failed";
+      break;
+    }
+  }
+})
       /* resolveMediaUrl → لما الـURL يبقى جاهز */
       .addCase(resolveMediaUrl.fulfilled, (state, action) => {
         const {

@@ -1,4 +1,3 @@
-
 // src/components/chats/Composer.jsx
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -13,10 +12,16 @@ import {
   Music2,
   Trash2,
   Check,
+  LayoutTemplate,
 } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { sendMedia, sendMessage } from "../../store/slices/messagesSlice";
+import {
+  openTemplatePicker,
+  fetchAvailableTemplates,
+  clearTemplateSelection,
+} from "../../store/slices/waTemplatesSlice";
 
 export default function Composer({
   t,
@@ -308,6 +313,18 @@ export default function Composer({
   const recMM = String(Math.floor(recSeconds / 60)).padStart(2, "0");
   const recSS = String(recSeconds % 60).padStart(2, "0");
 
+  const handleOpenTemplates = () => {
+    if (!effectiveConvId) {
+      setUiError("اختر محادثة أولاً قبل إرسال template.");
+      return;
+    }
+
+    setUiError(null);
+    dispatch(clearTemplateSelection());
+    dispatch(openTemplatePicker());
+    dispatch(fetchAvailableTemplates());
+  };
+
   // 👇 دي الدالة الأساسية اللي بتتندَه لما نعمل Send
   const handleSendClick = async () => {
     setUiError(null);
@@ -392,27 +409,27 @@ export default function Composer({
         // Fallback: نفس السلوك القديم (API)
         setDraft("");
         try {
-       dispatch(
-  sendMessage({
-    conversationId,
-    text: draft,
-    type: "text",
-    reply_to: replyTarget?.id ?? null,
+          dispatch(
+            sendMessage({
+              conversationId,
+              text: draft,
+              type: "text",
+              reply_to: replyTarget?.id ?? null,
 
-    // ✅ ده للـ UI فورًا
-    reply: replyTarget
-      ? {
-          id: replyTarget.id,
-          author: replyTarget.author,
-          type: replyTarget.type,
-          text: replyTarget.text,
-        }
-      : null,
+              // ✅ ده للـ UI فورًا
+              reply: replyTarget
+                ? {
+                    id: replyTarget.id,
+                    author: replyTarget.author,
+                    type: replyTarget.type,
+                    text: replyTarget.text,
+                  }
+                : null,
 
-    meId,
-    meUsername,
-  })
-);
+              meId,
+              meUsername,
+            })
+          );
 
           onSent?.();
         } catch (e) {
@@ -431,6 +448,9 @@ export default function Composer({
     isSending ||
     (!draft.trim() && attachments.length === 0) ||
     (!effectiveConvId && attachments.length > 0);
+
+  const disabledTemplateButton =
+    isSending || !effectiveConvId || isRecording;
 
   return (
     <div className="p-3 md:p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 pb-[env(safe-area-inset-bottom)]">
@@ -601,6 +621,16 @@ export default function Composer({
           title={t?.("attach", "Attach")}
         >
           <Paperclip className="w-5 h-5" />
+        </button>
+
+        <button
+          type="button"
+          onClick={handleOpenTemplates}
+          disabled={disabledTemplateButton}
+          className="p-2 rounded-lg border bg-gray-50 border-gray-300 dark:bg-gray-700 dark:border-gray-600 text-gray-900 dark:text-white hover:opacity-90 disabled:opacity-60"
+          title={t?.("templates", "Templates")}
+        >
+          <LayoutTemplate className="w-5 h-5" />
         </button>
 
         <input

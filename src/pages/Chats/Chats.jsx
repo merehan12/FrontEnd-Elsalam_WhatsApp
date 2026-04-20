@@ -44,6 +44,8 @@ import {
   wsMessageReceived,
   wsMessageStatusUpdated,
   resolveMediaUrl,
+  sendTemplateMessage,
+  
 } from "../../store/slices/messagesSlice";
 
 import {
@@ -86,7 +88,6 @@ import {
   bumpConv,
   looksLikePhone,
 } from "../../utils/chatHelpers";
-
 // ✅ normalize reply coming from backend (reply_to object OR reply object OR context)
 const normalizeReplyFromRaw = (rawMsg) => {
   const replyToObj =
@@ -1273,90 +1274,115 @@ let customerId = resolvedCustomerId || getSelectedCustomerId();
     requestAnimationFrame(() => scrollToBottom(true));
   }
 
-  function retrySend(msg) {
-    const text = (extractText(msg) || asTextSafe(msg?.text || "")).trim();
-    if (!text || !selectedChat) return;
+function retrySend(msg) {
+  if (!msg || !selectedChat) return;
 
-    const cid = String(selectedChat);
-    const nowISO = new Date().toISOString();
+  const cid = String(selectedChat);
+  const nowISO = new Date().toISOString();
 
-    const client_msg_id = `client-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  // ================= TEMPLATE RETRY =================
+  const isTemplateMsg =
+    String(msg?.type || "").toLowerCase() === "template" && !!msg?.template;
 
-    // reply لو الرسالة كانت reply
-    const { reply_to, reply } = normalizeReplyFromRaw(msg);
-
-    // optimistic
+  if (isTemplateMsg) {
     dispatch(
-      wsMessageReceived({
-        isActive: true,
-        message: {
-          id: client_msg_id,
-          client_msg_id,
-          conversation_id: cid,
-          conversation: cid,
-          sender: "agent",
-          sender_role: "agent",
-          direction: "out",
-          text,
-          body: { text },
-          status: "sending",
-          ts: nowISO,
-          created_at: nowISO,
-          timestamp: nowISO,
-          from_me: true,
-          is_from_me: true,
-          reply_to,
-          reply,
+      sendTemplateMessage({
+        conversationId: cid,
+        templateDetail: {
+          id: msg.template?.id,
+          meta_template_id: msg.template?.meta_template_id ?? null,
+          name: msg.template?.name ?? null,
+          language: msg.template?.language ?? null,
+          category: msg.template?.category ?? null,
+          components_json: Array.isArray(msg.template?.components)
+            ? msg.template.components
+            : [],
         },
       }),
     );
 
-    // تحديث ChatList
-    setAllList((prev) =>
-      bumpConv(prev, cid, (c) => ({
-        ...c,
-        lastMessage: text,
-        time: formatTime(nowISO),
-        unread: 0,
-        _updated_at: nowISO,
-      })),
-    );
-
-    // WS first
-    let sentViaWS = false;
-    if (wsRef.current && typeof wsRef.current.sendText === "function") {
-      try {
-        wsRef.current.sendText(text, {
-          author_id: meId ?? undefined,
-          author_username: meUsername ?? undefined,
-          sender_role: "agent",
-          client_msg_id,
-          reply_to: reply_to || undefined,
-        });
-        sentViaWS = true;
-      } catch (e) {
-        console.warn("WS retry sendText failed, fallback to API", e);
-      }
-    }
-
-    if (!sentViaWS) {
-      dispatch(
-        sendMessage({
-          conversationId: cid,
-          text,
-          type: "text",
-          client_msg_id,
-          reply_to,
-          reply,
-          meId,
-          meUsername,
-        }),
-      ).catch(() => {});
-    }
-
     requestAnimationFrame(() => scrollToBottom(true));
+    return;
   }
 
+  // ================= TEXT RETRY =================
+  const text = (extractText(msg) || asTextSafe(msg?.text || "")).trim();
+  if (!text) return;
+
+  const client_msg_id = `client-${Date.now()}-${Math.random()
+    .toString(16)
+    .slice(2)}`;
+
+  const { reply_to, reply } = normalizeReplyFromRaw(msg);
+
+  dispatch(
+    wsMessageReceived({
+      isActive: true,
+      message: {
+        id: client_msg_id,
+        client_msg_id,
+        conversation_id: cid,
+        conversation: cid,
+        sender: "agent",
+        sender_role: "agent",
+        direction: "out",
+        text,
+        body: { text },
+        status: "sending",
+        ts: nowISO,
+        created_at: nowISO,
+        timestamp: nowISO,
+        from_me: true,
+        is_from_me: true,
+        reply_to,
+        reply,
+      },
+    }),
+  );
+
+  setAllList((prev) =>
+    bumpConv(prev, cid, (c) => ({
+      ...c,
+      lastMessage: text,
+      time: formatTime(nowISO),
+      unread: 0,
+      _updated_at: nowISO,
+    })),
+  );
+
+  let sentViaWS = false;
+  if (wsRef.current && typeof wsRef.current.sendText === "function") {
+    try {
+      wsRef.current.sendText(text, {
+        author_id: meId ?? undefined,
+        author_username: meUsername ?? undefined,
+        sender_role: "agent",
+        client_msg_id,
+        reply_to: reply_to || undefined,
+      });
+      sentViaWS = true;
+    } catch (e) {
+      console.warn("WS retry sendText failed, fallback to API", e);
+    }
+  }
+
+  if (!sentViaWS) {
+    dispatch(
+      sendMessage({
+        conversationId: cid,
+        text,
+        type: "text",
+        client_msg_id,
+        reply_to,
+        reply,
+        meId,
+        meUsername,
+      }),
+    ).catch(() => {});
+  }
+
+  requestAnimationFrame(() => scrollToBottom(true));
+}
   // ===== Update ChatList with last message from visibleMessages =====
   useEffect(() => {
     if (!selectedChat) return;
