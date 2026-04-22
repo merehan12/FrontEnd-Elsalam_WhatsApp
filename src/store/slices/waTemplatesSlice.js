@@ -22,7 +22,7 @@ export const sendTemplateFromConversationApi = async ({
   const { data } = await api.post("/wa-templates/send/conversation/", {
     conversation_id,
     template_id,
-    body_parameters, 
+    body_parameters,  
   });
   return data;
 };

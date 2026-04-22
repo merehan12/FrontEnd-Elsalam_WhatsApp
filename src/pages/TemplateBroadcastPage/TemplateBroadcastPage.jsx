@@ -138,6 +138,45 @@ const normalizePhone = (value = "") => {
   return String(value).trim().replace(/[^\d+]/g, "");
 };
 
+const getCustomerPhone = (customer = {}) => {
+  return (
+    customer?.phone ||
+    customer?.phone_number ||
+    customer?.mobile ||
+    customer?.mobile_number ||
+    customer?.whatsapp_number ||
+    customer?.wa_id ||
+    customer?.customer_phone ||
+    customer?.customer_mobile ||
+    ""
+  );
+};
+
+const getCustomerName = (customer = {}) => {
+  return (
+    customer?.name ||
+    customer?.full_name ||
+    customer?.customer_name ||
+    `Customer #${customer?.id ?? ""}`
+  );
+};
+
+const getBodyPlaceholders = (templateDetail) => {
+  const components = Array.isArray(templateDetail?.components_json)
+    ? templateDetail.components_json
+    : [];
+
+  const bodyComp = components.find(
+    (c) => String(c?.type || "").toUpperCase() === "BODY"
+  );
+
+  const text = String(bodyComp?.text || "");
+  const matches = [...text.matchAll(/{{\s*(\d+)\s*}}/g)];
+  const nums = [...new Set(matches.map((m) => Number(m[1])).filter(Boolean))];
+
+  return nums.sort((a, b) => a - b);
+};
+
 export default function TemplateBroadcastPage() {
   const dispatch = useDispatch();
 
@@ -156,10 +195,11 @@ export default function TemplateBroadcastPage() {
   const [search, setSearch] = useState("");
   const [phoneInput, setPhoneInput] = useState("");
 
-  const [recipientMode, setRecipientMode] = useState("phone"); // phone | customer
+  const [recipientMode, setRecipientMode] = useState("phone");
   const [customerSearch, setCustomerSearch] = useState("");
 
   const [recipients, setRecipients] = useState([]);
+  const [bodyParameters, setBodyParameters] = useState([]);
 
   const [sendLoading, setSendLoading] = useState(false);
   const [sendError, setSendError] = useState("");
@@ -168,65 +208,29 @@ export default function TemplateBroadcastPage() {
   const [jobLoading, setJobLoading] = useState(false);
   const [jobData, setJobData] = useState(null);
   const [jobError, setJobError] = useState("");
+
   const [syncLoading, setSyncLoading] = useState(false);
-const [syncMessage, setSyncMessage] = useState("");
-const [syncError, setSyncError] = useState("");
-const getCustomerPhone = (customer = {}) => {
-  return (
-    customer?.phone ||
-    customer?.phone_number ||
-    customer?.mobile ||
-    customer?.mobile_number ||
-    customer?.whatsapp_number ||
-    customer?.wa_id ||
-    customer?.customer_phone ||
-    customer?.customer_mobile ||
-    customer?.conversation_id ||
-    ""
-  );
-};
+  const [syncMessage, setSyncMessage] = useState("");
+  const [syncError, setSyncError] = useState("");
 
-
-const handleSyncTemplates = async () => {
-  try {
-    setSyncLoading(true);
-    setSyncError("");
-    setSyncMessage("");
-
-    const { data } = await api.post("/wa-templates/sync/", {});
-
-    const synced = data?.data?.synced ?? 0;
-    const created = data?.data?.created ?? 0;
-    const updated = data?.data?.updated ?? 0;
-
-    setSyncMessage(
-      `Templates synced successfully • Synced: ${synced} • Created: ${created} • Updated: ${updated}`
-    );
-
-    await dispatch(fetchAvailableTemplates());
-  } catch (err) {
-    setSyncError(
-      err?.response?.data?.message ||
-        err?.response?.data?.detail ||
-        err?.message ||
-        "Failed to sync templates"
-    );
-  } finally {
-    setSyncLoading(false);
-  }
-};
-const getCustomerName = (customer = {}) => {
-  return (
-    customer?.name ||
-    customer?.full_name ||
-    customer?.customer_name ||
-    `Customer #${customer?.id ?? ""}`
-  );
-};
   useEffect(() => {
     dispatch(fetchAvailableTemplates());
     dispatch(fetchCustomers({ page: 1, page_size: 100 }));
   }, [dispatch]);
+
+  const bodyPlaceholders = useMemo(
+    () => getBodyPlaceholders(selectedTemplateDetail),
+    [selectedTemplateDetail]
+  );
+
+  useEffect(() => {
+    if (!bodyPlaceholders.length) {
+      setBodyParameters([]);
+      return;
+    }
+
+    setBodyParameters(new Array(bodyPlaceholders.length).fill(""));
+  }, [selectedTemplateDetail, bodyPlaceholders.length]);
 
   useEffect(() => {
     if (!sendResult?.job_id) return;
@@ -281,6 +285,35 @@ const getCustomerName = (customer = {}) => {
     };
   }, [sendResult]);
 
+  const handleSyncTemplates = async () => {
+    try {
+      setSyncLoading(true);
+      setSyncError("");
+      setSyncMessage("");
+
+      const { data } = await api.post("/wa-templates/sync/", {});
+
+      const synced = data?.data?.synced ?? 0;
+      const created = data?.data?.created ?? 0;
+      const updated = data?.data?.updated ?? 0;
+
+      setSyncMessage(
+        `Templates synced successfully • Synced: ${synced} • Created: ${created} • Updated: ${updated}`
+      );
+
+      await dispatch(fetchAvailableTemplates());
+    } catch (err) {
+      setSyncError(
+        err?.response?.data?.message ||
+          err?.response?.data?.detail ||
+          err?.message ||
+          "Failed to sync templates"
+      );
+    } finally {
+      setSyncLoading(false);
+    }
+  };
+
   const filteredTemplates = useMemo(() => {
     const q = String(search || "").trim().toLowerCase();
     if (!q) return availableTemplates || [];
@@ -304,7 +337,7 @@ const getCustomerName = (customer = {}) => {
 
     return (customers || []).filter((c) => {
       const name = String(getCustomerName(c)).toLowerCase();
-const phone = String(getCustomerPhone(c)).toLowerCase();
+      const phone = String(getCustomerPhone(c)).toLowerCase();
 
       return name.includes(q) || phone.includes(q);
     });
@@ -320,6 +353,10 @@ const phone = String(getCustomerPhone(c)).toLowerCase();
     if (!template?.id) return;
     dispatch(setSelectedTemplateId(template.id));
     dispatch(fetchTemplateDetail(template.id));
+    setSendError("");
+    setSendResult(null);
+    setJobData(null);
+    setJobError("");
   };
 
   const addPhoneRecipient = () => {
@@ -349,8 +386,8 @@ const phone = String(getCustomerPhone(c)).toLowerCase();
     if (!customer?.id) return;
 
     const customerId = Number(customer.id);
-  const phone = getCustomerPhone(customer);
-const label = normalizePhone(phone) || getCustomerName(customer);
+    const phone = getCustomerPhone(customer);
+    const label = normalizePhone(phone) || getCustomerName(customer);
 
     const exists = recipients.some(
       (r) => Number(r?.customer_id) === customerId
@@ -383,6 +420,17 @@ const label = normalizePhone(phone) || getCustomerName(customer);
       return;
     }
 
+    const cleanedBodyParameters = bodyParameters.map((v) => String(v || "").trim());
+    const requiredCount = bodyPlaceholders.length;
+    const filledCount = cleanedBodyParameters.filter(Boolean).length;
+
+    if (requiredCount > 0 && filledCount !== requiredCount) {
+      setSendError(
+        `Template '${selectedTemplateDetail?.name}' requires ${requiredCount} BODY parameter(s). Send body_parameters with the request.`
+      );
+      return;
+    }
+
     try {
       setSendLoading(true);
       setSendError("");
@@ -398,6 +446,7 @@ const label = normalizePhone(phone) || getCustomerName(customer);
           }
           return { phone_number: r.phone_number };
         }),
+        body_parameters: cleanedBodyParameters,
       };
 
       const { data } = await api.post("/wa-templates/send/list/", payload);
@@ -442,55 +491,54 @@ const label = normalizePhone(phone) || getCustomerName(customer);
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-[340px_minmax(0,1fr)_380px] gap-6">
-          {/* Templates list */}
           <div className="rounded-3xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm overflow-hidden">
-           <div className="p-4 border-b border-gray-200 dark:border-gray-800">
-  <div className="flex items-start justify-between gap-3">
-    <div>
-      <div className="text-lg font-semibold">Templates</div>
-      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-        Choose a template first
-      </div>
-    </div>
+            <div className="p-4 border-b border-gray-200 dark:border-gray-800">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className="text-lg font-semibold">Templates</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Choose a template first
+                  </div>
+                </div>
 
-    <button
-      type="button"
-      onClick={handleSyncTemplates}
-      disabled={syncLoading}
-      className="px-3 py-2 rounded-xl border border-[#63bbb3]/30 bg-[#63bbb3]/10 text-[#63bbb3] hover:bg-[#63bbb3]/20 disabled:opacity-60 text-sm flex items-center gap-2"
-    >
-      {syncLoading ? (
-        <Loader2 className="w-4 h-4 animate-spin" />
-      ) : (
-        <span>↻</span>
-      )}
-      <span>Sync</span>
-    </button>
-  </div>
+                <button
+                  type="button"
+                  onClick={handleSyncTemplates}
+                  disabled={syncLoading}
+                  className="px-3 py-2 rounded-xl border border-[#63bbb3]/30 bg-[#63bbb3]/10 text-[#63bbb3] hover:bg-[#63bbb3]/20 disabled:opacity-60 text-sm flex items-center gap-2"
+                >
+                  {syncLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <span>↻</span>
+                  )}
+                  <span>Sync</span>
+                </button>
+              </div>
 
-  {(syncMessage || syncError) && (
-    <div
-      className={`mt-3 text-xs rounded-xl px-3 py-2 border ${
-        syncError
-          ? "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800"
-          : "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
-      }`}
-    >
-      {syncError || syncMessage}
-    </div>
-  )}
+              {(syncMessage || syncError) && (
+                <div
+                  className={`mt-3 text-xs rounded-xl px-3 py-2 border ${
+                    syncError
+                      ? "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800"
+                      : "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
+                  }`}
+                >
+                  {syncError || syncMessage}
+                </div>
+              )}
 
-  <div className="relative mt-4">
-    <Search className="w-4 h-4 absolute top-1/2 -translate-y-1/2 left-3 opacity-60" />
-    <input
-      type="text"
-      value={search}
-      onChange={(e) => setSearch(e.target.value)}
-      placeholder="Search templates..."
-      className="w-full pl-9 pr-3 py-2.5 rounded-xl border bg-gray-50 border-gray-300 dark:bg-gray-800 dark:border-gray-700 text-gray-900 dark:text-white"
-    />
-  </div>
-</div>
+              <div className="relative mt-4">
+                <Search className="w-4 h-4 absolute top-1/2 -translate-y-1/2 left-3 opacity-60" />
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search templates..."
+                  className="w-full pl-9 pr-3 py-2.5 rounded-xl border bg-gray-50 border-gray-300 dark:bg-gray-800 dark:border-gray-700 text-gray-900 dark:text-white"
+                />
+              </div>
+            </div>
 
             <div className="p-4 space-y-3 max-h-[70vh] overflow-y-auto">
               {availableLoading ? (
@@ -518,7 +566,6 @@ const label = normalizePhone(phone) || getCustomerName(customer);
             </div>
           </div>
 
-          {/* Preview */}
           <div className="rounded-3xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm overflow-hidden">
             <div className="p-4 border-b border-gray-200 dark:border-gray-800">
               <div className="text-lg font-semibold">Preview</div>
@@ -598,7 +645,6 @@ const label = normalizePhone(phone) || getCustomerName(customer);
             </div>
           </div>
 
-          {/* Recipients + send */}
           <div className="rounded-3xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm overflow-hidden">
             <div className="p-4 border-b border-gray-200 dark:border-gray-800">
               <div className="text-lg font-semibold">Recipients</div>
@@ -608,7 +654,6 @@ const label = normalizePhone(phone) || getCustomerName(customer);
             </div>
 
             <div className="p-4 space-y-4">
-              {/* Switch */}
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
@@ -635,7 +680,6 @@ const label = normalizePhone(phone) || getCustomerName(customer);
                 </button>
               </div>
 
-              {/* Phone mode */}
               {recipientMode === "phone" && (
                 <div className="flex items-center gap-2">
                   <div className="relative flex-1">
@@ -665,7 +709,6 @@ const label = normalizePhone(phone) || getCustomerName(customer);
                 </div>
               )}
 
-              {/* Customer mode */}
               {recipientMode === "customer" && (
                 <div className="space-y-3">
                   <div className="relative">
@@ -692,8 +735,8 @@ const label = normalizePhone(phone) || getCustomerName(customer);
                       ) : (
                         filteredCustomers.map((customer) => {
                           const customerId = Number(customer?.id);
-                        const phone = getCustomerPhone(customer);
-const name = getCustomerName(customer);
+                          const phone = getCustomerPhone(customer);
+                          const name = getCustomerName(customer);
 
                           const selected = recipients.some(
                             (r) => Number(r?.customer_id) === customerId
@@ -737,7 +780,37 @@ const name = getCustomerName(customer);
                 </div>
               )}
 
-              {/* Added recipients */}
+              {bodyPlaceholders.length > 0 && (
+                <div className="rounded-2xl border border-gray-200 dark:border-gray-800 p-4 space-y-3">
+                  <div className="text-sm font-medium">Template parameters</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    Fill the BODY variables required by this template
+                  </div>
+
+                  {bodyPlaceholders.map((num, idx) => (
+                    <div key={num} className="space-y-1">
+                      <label className="text-xs text-gray-500 dark:text-gray-400">
+                        Parameter {num}
+                      </label>
+                      <input
+                        type="text"
+                        value={bodyParameters[idx] || ""}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setBodyParameters((prev) => {
+                            const next = [...prev];
+                            next[idx] = value;
+                            return next;
+                          });
+                        }}
+                        placeholder={`Enter value for {{${num}}}`}
+                        className="w-full px-3 py-2.5 rounded-xl border bg-gray-50 border-gray-300 dark:bg-gray-800 dark:border-gray-700 text-gray-900 dark:text-white"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <div className="rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
                 <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-800 text-sm font-medium">
                   Added recipients
@@ -776,7 +849,6 @@ const name = getCustomerName(customer);
                 </div>
               </div>
 
-              {/* Send panel */}
               <div className="rounded-2xl border border-gray-200 dark:border-gray-800 p-4 space-y-3">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-500 dark:text-gray-400">
