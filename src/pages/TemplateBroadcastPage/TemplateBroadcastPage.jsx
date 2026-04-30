@@ -694,10 +694,11 @@ export default function TemplateBroadcastPage() {
                           addPhoneRecipient();
                         }
                       }}
-                      placeholder="+201149943382"
+                      placeholder="+96600000000"
                       className="w-full pl-9 pr-3 py-2.5 rounded-xl border bg-gray-50 border-gray-300 dark:bg-gray-800 dark:border-gray-700 text-gray-900 dark:text-white"
                     />
                   </div>
+                  
 
                   <button
                     type="button"
